@@ -1,0 +1,50 @@
+* Notes on "Understanding F-Algebras" https://www.fpcomplete.com/user/bartosz/understanding-algebras
+** Algebra type
+~type Algebra f a = f a -> a~
+** Simple algebra
+#+BEGIN_SRC
+type SimpleA = Algebra ExprF Int
+
+alg :: SimpleA
+alg (Const i) = i
+alg (x `Add` y) = x + y
+alg (x `Mul` y) = x * y
+#+END_SRC
+** Fix
+~newtype Fix f = Fx (f (Fix f))~
+** Initial algebras
+~type ExprInitAlg = Algebra ExprF (Fix ExprF)~
+- Functor
+- Carrier type
+- Alg function
+#+BEGIN_SRC
+ex_init_alg :: ExprF (Fix ExprF) -> Fix ExprF
+ex_init_alg = Fx
+#+END_SRC
+** What does our evaluator evaluate?
+- Given: ~Add (Fx $ Const 2) (Fx $ Const 3)~
+- Produces: ~Fx $ Add (Fx $ Const 2) (Fx $ Const 3)~
+- Our evaluator is not lossy
+** Initial algebra properties
+- The initial algebra has the property that there exists a unique homomorphism from it to any other algebra based on the same functor
+-[[file:orgimages/alg.png]]
+#+BEGIN_SRC
+g :: Fix f -> a~
+g = alg . (fmap g) . unFix~
+#+END_SRC
+** Catamorphism definition
+#+BEGIN_SRC
+cata :: Functor f => (fa -> a) -> Fix f -> a
+cata alg = alg . fmap (cata alg) . unFix
+#+END_SRC
+** Catamorphisms
+~cata :: Functor f => (f a -> a) -> (Fix f -> a)~
+- cata takes an arbitrary algebra, which is a non-recursive function ~fa -> a~
+- cata returns an evaluator function ~Fix f -> a~
+_ie. the catamorphism lets us evaluate arbitrarily nested expressions_
+** Finished evaluator
+#+BEGIN_SRC
+eval :: Fix ExprF -> Int
+-- eval = cata alg = alg . fmap (cata alg) . unFix
+eval = alg . fmap eval . unFix
+#+END_SRC
