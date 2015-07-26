@@ -29,8 +29,8 @@ ex_init_alg = Fx
 - The initial algebra has the property that there exists a unique homomorphism from it to any other algebra based on the same functor
 -[[file:orgimages/alg.png]]
 #+BEGIN_SRC
-g :: Fix f -> a~
-g = alg . (fmap g) . unFix~
+g :: Fix f -> a
+g = alg . (fmap g) . unFix
 #+END_SRC
 ** Catamorphism definition
 #+BEGIN_SRC
