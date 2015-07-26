@@ -1,0 +1,7 @@
+* Notes on Cartesian Closed Categories: http://conal.net/blog/posts/haskell-to-hardware-via-cccs
+** "Category"
+Means we have morphisms. There is an identity morphism, and there is an associative composition operator. In Haskell this is ~id~ and ~(.)~.
+** "Cartesian"
+Means we have products with projection functions, and the ability to combine two functions into a pair-producing function. In Haskell these operations are ~fst~ and ~snd~ together with ~(&&&)~ from ~Control.Arrow~.
+** "Closed"
+Means we have a way to represent morphisms via objects, referred to as "exponentials". The corresponding operations are ~curry~, ~uncurry~, and ~apply~ (?). These exponential objects are simply first-class functions.
